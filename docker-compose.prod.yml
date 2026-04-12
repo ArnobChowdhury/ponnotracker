@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  backend:
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - PYTHONUNBUFFERED=1
+    # Using Gunicorn with Uvicorn workers for better process management
+    # Ensure 'gunicorn' is added to your requirements.txt
+    command: gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    restart: always
+    environment:
+      - NODE_ENV=production
+    command: npm run start
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  db:
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  glitchtip:
+    restart: always
+    environment:
+      - DEBUG=False

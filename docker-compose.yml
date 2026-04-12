@@ -1,0 +1,57 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    container_name: ponno-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/ponno
+      - REDIS_URL=redis://redis:6379/0
+      - GLITCHTIP_DSN=http://glitchtip:8000/api/1/store/
+    depends_on:
+      - db
+      - redis
+      - glitchtip
+
+  frontend:
+    build: ./frontend
+    container_name: ponno-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8000
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:15
+    container_name: ponno-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ponno
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: ponno-redis
+
+  glitchtip:
+    image: glitchtip/glitchtip:latest
+    container_name: ponno-glitchtip
+    depends_on:
+      - db
+      - redis
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/glitchtip
+      REDIS_URL: redis://redis:6379/1
+      SECRET_KEY: super-secret-key
+      PORT: 8000
+      EMAIL_URL: smtp://localhost
+
+volumes:
+  postgres_data:
