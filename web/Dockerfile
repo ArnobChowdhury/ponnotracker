@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:22-alpine
 
 # Set work directory
 WORKDIR /app
@@ -9,11 +9,14 @@ COPY package.json package-lock.json* ./
 # Install deps
 RUN npm install
 
-# Copy app
+# Copy app source
 COPY . .
+
+# Build the Next.js application
+RUN npm run build
 
 # Expose port
 EXPOSE 3000
 
-# Run dev server
-CMD ["npm", "run", "dev"]
+# Default command (can be overridden by compose)
+CMD ["npm", "run", "start"]
