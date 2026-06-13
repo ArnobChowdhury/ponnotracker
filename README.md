@@ -23,10 +23,38 @@ In development, we use `docker-compose.override.yml` to enable hot-reloading for
 
    _Note: Docker Compose automatically merges `docker-compose.yml` and `docker-compose.override.yml`._
 
+### 💡 Local IDE Setup (IntelliSense)
+
+To get IntelliSense and fix linting errors in your IDE, create a local virtual environment for the backend:
+
+```bash
+cd api
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+### 🌐 Frontend Local Setup (IntelliSense)
+
+To get IntelliSense and fix linting errors for Next.js, install dependencies locally:
+
+```bash
+cd web
+npm install
+```
+
 2. **Access the services:**
    - Backend API: http://localhost:8000
    - Frontend App: http://localhost:3000
    - Glitchtip: http://localhost:8001
+
+### Important: Dependency Changes
+
+If you add or remove packages on your host machine (via pip install or npm install), you must rebuild the Docker containers to sync the environment:
+
+```bash
+docker compose up --build
+```
 
 ---
 
