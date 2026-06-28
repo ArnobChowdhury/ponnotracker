@@ -1,12 +1,17 @@
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+
+from core.database import get_db
+from app.models import Placeholder
 
 app = FastAPI(title="Ponno Tracker API")
 
 # Configure CORS
-# In development, we allow all origins. In production, you should limit this
-# to your specific frontend domain.
+# In development, should be limited to only specific frontend domain.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -25,8 +30,21 @@ def read_root():
 
 @app.get("/health")
 def health_check():
-    """
-    This endpoint is used by the Docker healthcheck defined in 
-    docker-compose.prod.yml to ensure the service is running.
-    """
     return {"status": "healthy"}
+
+class PlaceholderCreate(BaseModel):
+    name: str
+
+@app.post("/placeholders/")
+async def create_placeholder(data: PlaceholderCreate, db: AsyncSession = Depends(get_db)):
+    placeholder = Placeholder(name=data.name)
+    db.add(placeholder)
+    await db.commit()
+    await db.refresh(placeholder)
+    return {"id": placeholder.id, "name": placeholder.name}
+
+@app.get("/placeholders/")
+async def list_placeholders(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Placeholder))
+    placeholders = result.scalars().all()
+    return [{"id": p.id, "name": p.name} for p in placeholders]
