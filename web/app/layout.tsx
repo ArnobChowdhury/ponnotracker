@@ -10,7 +10,7 @@ const sansFont = Work_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "PonnoTracker",
+  title: "Gudam",
   description: "An inventory management app",
 };
 

@@ -1,4 +1,4 @@
-# 🌊 Ponno Tracker – Roadmap
+# 🏭 Gudam – Roadmap
 
 ## 🧭 Vision (MVP Scope)
 

@@ -1,4 +1,4 @@
-# 🌊 Ponno Tracker
+# 🌊 Gudam
 
 Inventory and order management system with a FastAPI backend and Next.js frontend.
 

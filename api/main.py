@@ -8,7 +8,7 @@ from sqlalchemy import select
 from core.database import get_db
 from app.models import Placeholder
 
-app = FastAPI(title="Ponno Tracker API")
+app = FastAPI(title="Gudam")
 
 # Configure CORS
 # In development, should be limited to only specific frontend domain.
@@ -23,7 +23,7 @@ app.add_middleware(
 @app.get("/")
 def read_root():
     return {
-        "message": "Welcome to Ponno Tracker API",
+        "message": "Welcome to Gudam API",
         "database_configured": bool(os.getenv("DATABASE_URL")),
         "redis_configured": bool(os.getenv("REDIS_URL"))
     }

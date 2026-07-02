@@ -3,12 +3,12 @@ version: "3.9"
 services:
   api:
     build: ./api
-    container_name: ponno-api
+    container_name: gudam-api
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/ponno
-      - ALEMBIC_URL=postgresql://postgres:postgres@db:5432/ponno 
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/gudam
+      - ALEMBIC_URL=postgresql://postgres:postgres@db:5432/gudam
       - REDIS_URL=redis://redis:6379/0
       - GLITCHTIP_DSN=http://glitchtip:8000/api/1/store/
     depends_on:
@@ -18,7 +18,7 @@ services:
 
   web:
     build: ./web
-    container_name: ponno-web
+    container_name: gudam-web
     ports:
       - "3000:3000"
     environment:
@@ -31,22 +31,22 @@ services:
 
   db:
     image: postgres:15
-    container_name: ponno-db
+    container_name: gudam-db
     restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: ponno
+      POSTGRES_DB: gudam 
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
   redis:
     image: redis:7
-    container_name: ponno-redis
+    container_name: gudam-redis
 
   glitchtip:
     image: glitchtip/glitchtip:latest
-    container_name: ponno-glitchtip
+    container_name: gudam-glitchtip
     depends_on:
       - db
       - redis
